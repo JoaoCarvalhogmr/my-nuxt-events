@@ -1,0 +1,99 @@
+<script setup lang="ts">
+import { reactive } from 'vue'
+import { useAuth } from '#imports';
+
+const { userId, isLoaded } = useAuth()
+const state = reactive({
+  title: '',
+  date: '',
+  type: ''
+})
+
+
+
+const items = [
+  'concert',
+  'meeting',
+  'workshop',
+  'webinar',
+  'conference',
+  'birthday',
+  'holiday',
+  'festival',
+  'sport',
+  'networking',
+  'fundraiser',
+  'party',
+  'seminar',
+  'launch',
+  'training'
+]
+const toast = useToast();
+const eventStore = useEventStore()
+
+const showToast = () => {
+  toast.add({
+    title: 'Uh oh! Something went wrong.',
+    description: 'There was a problem with your request.',
+    color: 'error'
+  })
+}
+
+const submitEvent = async () => {
+  if (!state.title || !state.type || !state.date) {
+    toast.add({
+      title: 'Missing Fields',
+      description: 'Please fill out all fields before submitting.',
+      color: 'warning'
+    })
+    return
+  }
+
+  if (!isLoaded.value || !userId.value) {
+    toast.add({
+      title: 'Authentication Required',
+      description: 'Please sign in to add events.',
+      color: 'error'
+    })
+    return;
+  }
+
+  try {
+    await eventStore.addEvent({
+      title: state.title,
+      date: state.date,
+      type: state.type,
+      userId: userId.value
+    })
+
+    console.log(userId.value)
+    await eventStore.fetchEvents(userId.value)
+
+    toast.add({
+      title: 'Event Added',
+      description: `Your "${state.title}" event was added successfully.`,
+      color: 'success'
+    })
+
+    state.title = ''
+    state.date = ''
+    state.type = ''
+  } catch (e) {
+    showToast()
+  }
+}
+</script>
+
+<template>
+    <UCard class="p-4">
+      <form @submit.prevent="submitEvent" class="flex items-center gap-2">
+        <UInput v-model="state.title" placeholder="Event title"  />
+        <USelect v-model="state.type" :items="items" class="w-48" />
+        <UInput v-model="state.date" type="date"    />
+        <UButton type="submit" icon="i-heroicons-plus" size="lg">Add Event</UButton>
+      </form>
+    </UCard>
+  </template>
+  
+
+  
