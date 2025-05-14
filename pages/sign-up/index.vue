@@ -13,6 +13,8 @@ definePageMeta({
       path="/sign-up"
       routing="path"
       redirectUrl="/"
+      afterSignUpUrl="/"
+      signUpUrl="/sign-up"
     />
   </div>
 </template>

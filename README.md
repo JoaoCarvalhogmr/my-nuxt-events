@@ -123,4 +123,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Nuxt Team](https://nuxt.com/) for the amazing framework
 - [Clerk](https://clerk.com/) for authentication
 - [Drizzle ORM](https://orm.drizzle.team/) for database operations
-- [Schedule-X](https://schedule-x.org/) for the calendar component
+- [Schedule-X](https://schedule-x.dev/) for the calendar component

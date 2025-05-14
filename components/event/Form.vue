@@ -9,8 +9,6 @@ const state = reactive({
   type: ''
 })
 
-
-
 const items = [
   'concert',
   'meeting',
@@ -66,7 +64,6 @@ const submitEvent = async () => {
       userId: userId.value
     })
 
-    console.log(userId.value)
     await eventStore.fetchEvents(userId.value)
 
     toast.add({
@@ -88,7 +85,7 @@ const submitEvent = async () => {
     <UCard class="p-4">
       <form @submit.prevent="submitEvent" class="flex items-center gap-2">
         <UInput v-model="state.title" placeholder="Event title"  />
-        <USelect v-model="state.type" :items="items" class="w-48" />
+        <USelect v-model="state.type" :items="items" placeholder="Event type" class="w-48" />
         <UInput v-model="state.date" type="date"    />
         <UButton type="submit" icon="i-heroicons-plus" size="lg">Add Event</UButton>
       </form>

@@ -10,6 +10,8 @@ definePageMeta({
       path="/sign-in"
       routing="path"
       redirectUrl="/"
+      afterSignInUrl="/"
+      signInUrl="/sign-in"
     />
   </div>
 </template>

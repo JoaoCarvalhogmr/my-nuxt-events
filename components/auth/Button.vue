@@ -5,7 +5,7 @@ const { sessionId } = useAuth()
 </script>
 
 <template>
-  <div>
+  <div class="auth-button-container">
     <SignInButton v-if="!sessionId">
       <template #default="{ handler }">
         <UButton 
@@ -14,13 +14,14 @@ const { sessionId } = useAuth()
           icon="i-lucide-log-in"
           label="Sign In"
           @click="handler"
-        />      </template>
+        />      
+    </template>
     </SignInButton>
 
     <SignOutButton v-else :sign-out-options="{ sessionId }">
       <template #default="{ handler }">
         <UButton 
-          color="gray"
+          color="primary"
           size="sm"
           icon="i-lucide-log-out"
           label="Sign Out"

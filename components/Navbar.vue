@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
-import { SignOutButton } from '@clerk/nuxt/components';
-
-
 
 const items = ref<NavigationMenuItem[]>([
   {
@@ -20,14 +17,21 @@ const items = ref<NavigationMenuItem[]>([
 </script>
 <template>
   <div class="w-full px-4 py-2">
-    <div class="flex items-center border border-white/10 bg-white/5 backdrop-blur-md rounded-xl p-3">
-    <h2>MyNuxtEvents</h2>
+    <div class="flex items-center border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl p-3 transition-colors duration-300">
+    <h2 class="text-gray-900 dark:text-white font-semibold text-lg">
+      MyNuxtEvents
+    </h2>
       <UNavigationMenu
         :items="items"
-        class="w-full justify-around text-white"
+          class="w-full justify-around text-gray-900 dark:text-white"
       />
       <ColorModeButton />
       <AuthButton />
     </div>
   </div>
 </template>
+<style scoped>
+  .auth-button-container {
+  margin-left: 10px;
+}
+</style>
