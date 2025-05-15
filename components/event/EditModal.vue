@@ -1,13 +1,29 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { useAuth } from '#imports';
+ import { reactive } from 'vue'
+ import { useEventStore } from '#imports';
 
-const { userId, isLoaded } = useAuth()
-const state = reactive({
+  const props = defineProps<{
+      eventId: string,
+  }>()
+
+  const emit = defineEmits<{ close: [boolean] }>()
+
+ const store = useEventStore();
+
+ const state = reactive({
   title: '',
   date: '',
   type: ''
 })
+
+const populateForm = async() => {
+  const res = await store.fetchSingleEvent(props.eventId);
+  state.title = res.title;
+  state.type = res.type;
+  state.date = new Date(res.date).toISOString().split('T')[0]
+}
+
+onMounted(populateForm)
 
 const items = [
   'concert',
@@ -25,9 +41,8 @@ const items = [
   'seminar',
   'launch',
   'training'
-]
+];
 const toast = useToast();
-const eventStore = useEventStore()
 
 const showToast = () => {
   toast.add({
@@ -47,34 +62,24 @@ const submitEvent = async () => {
     return
   }
 
-  if (!isLoaded.value || !userId.value) {
-    toast.add({
-      title: 'Authentication Required',
-      description: 'Please sign in to add events.',
-      color: 'error'
-    })
-    return;
-  }
-
   try {
-    await eventStore.addEvent({
+    await store.updateEvent({
       title: state.title,
       date: state.date,
       type: state.type,
-      userId: userId.value
+      id: props.eventId
     })
 
-    await eventStore.fetchEvents(userId.value)
-
     toast.add({
-      title: 'Event Added',
-      description: `Your "${state.title}" event was added successfully.`,
+      title: 'Event updated',
+      description: `Your event was updated successfully.`,
       color: 'success'
     })
 
     state.title = ''
     state.date = ''
     state.type = ''
+    emit('close', true)
   } catch (e) {
     showToast()
   }
@@ -82,15 +87,20 @@ const submitEvent = async () => {
 </script>
 
 <template>
-    <UCard class="p-4">
+  <UModal
+    :close="{ onClick: () => emit('close', false) }"
+    title="Edit Event"
+    class="max-w-2xl"
+  >
+    <template #footer>
       <form @submit.prevent="submitEvent" class="flex items-center gap-2">
         <UInput v-model="state.title" placeholder="Event title"  />
         <USelect v-model="state.type" :items="items" placeholder="Event type" class="w-48" />
         <UInput v-model="state.date" type="date"    />
-        <UButton type="submit" icon="i-heroicons-plus" size="lg">Add Event</UButton>
+        <UButton color="warning" type="submit" icon="i-heroicons-arrow-path" size="lg">Edit</UButton>
       </form>
-    </UCard>
-  </template>
-  
+    </template>
+  </UModal>
+</template>
 
   
