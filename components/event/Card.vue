@@ -18,43 +18,36 @@
     await store.fetchEvents(userId.value);
   }
 
-
   async function openModal(modalType: 'edit' | 'delete') {
+    let modal;
     if(modalType === 'delete') {
-    const modal = overlay.create(EventDeleteModal, {
-      props: {
-        title: `Are you sure you want to delete "${props.title}"?`,
-      },
-    });
-
-    const instance = modal.open();
-    
-    const confirmed = await instance.result;
-
-     if (confirmed && isLoaded.value && userId.value) {
-      await deleteEvent();
+      modal = overlay.create(EventDeleteModal, {
+        props: {
+          title: `Are you sure you want to delete "${props.title}"?`,
+        },
+      }
+      );
     }
-
-    } 
     else {
-    const modal = overlay.create(EditModal, {
-      props: {
-        eventId: props.id,
-      },
-    });
-
+    modal = overlay.create(EditModal, {
+        props: {
+          eventId: props.id,
+        },
+      })
+    }
     const instance = modal.open();
     
     const confirmed = await instance.result;
 
-     if (confirmed && isLoaded.value && userId.value) {
-      await store.fetchEvents(userId.value);
+    if (confirmed && isLoaded.value && userId.value) {
+      if(modalType === 'delete') {
+        await deleteEvent();
+      }
+      else {
+        await store.fetchEvents(userId.value)
+      }
     }
-    }
-
-  }
-
-
+  } 
 </script>
   
 <template>

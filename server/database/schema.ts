@@ -1,6 +1,6 @@
 import { pgTable, serial, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
-export const events = pgTable('event', {
+export const events = pgTable('events', {
     id: uuid('id').primaryKey().defaultRandom(), // use defaultRandom
     userId: text('userId').notNull(),
     title: text('title').notNull(),

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+import { UserButton } from '#components';
 
 const items = ref<NavigationMenuItem[]>([
   {
@@ -25,13 +26,11 @@ const items = ref<NavigationMenuItem[]>([
         :items="items"
           class="w-full justify-around text-gray-900 dark:text-white"
       />
-      <ColorModeButton />
-      <AuthButton />
+      <section class="flex gap-3">
+        <ColorModeButton />
+        <UserButton  />
+      </section>
     </div>
   </div>
 </template>
-<style scoped>
-  .auth-button-container {
-  margin-left: 10px;
-}
-</style>
+
