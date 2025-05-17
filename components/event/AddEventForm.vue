@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { useAuth } from '#imports';
+import { useEventStore } from '~/stores/events/useEventstore';
+import type { Event } from '~/utils/types';
 
 const { userId, isLoaded } = useAuth();
 
-const state = reactive({
+const state = reactive<Pick<Event, 'title' | 'date'|'type'>>({
   title: '',
   date: '',
   type: ''
 })
 
-const items = [
+const items: Pick<Event, 'type'> = [
   'concert',
   'meeting',
   'workshop',

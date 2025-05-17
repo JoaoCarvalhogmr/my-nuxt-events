@@ -6,5 +6,5 @@
       <EventAddEventForm />
       <EventList />
     </div>
-  </template>
+</template>
   

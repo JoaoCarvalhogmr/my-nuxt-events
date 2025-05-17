@@ -4,6 +4,7 @@
   import { useAuth } from '#imports';
   import { EventDeleteModal } from '#components';
   import EditModal from './EditModal.vue';
+  import { useEventStore } from '~/stores/events/useEventstore';
 
   const props = defineProps<Event>();
   const icon = computed(() => eventIconMap[props.type] || eventIconMap.default)

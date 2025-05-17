@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted,reactive } from 'vue'
 import { useAuth} from '#imports'
-import { useEventStore } from '#imports'
+import { useEventStore } from '~/stores/events/useEventstore'
 
 const eventStore = useEventStore()
 

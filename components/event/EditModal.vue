@@ -1,6 +1,7 @@
 <script setup lang="ts">
  import { reactive } from 'vue'
- import { useEventStore } from '#imports';
+ import { useEventStore } from '~/stores/events/useEventstore';
+ import { type Event } from '#imports';
 
   const props = defineProps<{
       eventId: string,
@@ -10,11 +11,12 @@
 
  const store = useEventStore();
 
- const state = reactive({
-  title: '',
-  date: '',
-  type: ''
-})
+
+  const state = reactive<Pick<Event, 'title'| 'date' | 'type'>>({
+    title: '',
+    date: '',
+    type: ''
+  })
 
 const populateForm = async() => {
   const res = await store.fetchSingleEvent(props.eventId);
