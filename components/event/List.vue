@@ -5,28 +5,33 @@ import { useEventStore } from '~/stores/events/useEventstore'
 
 const eventStore = useEventStore()
 
-const eventTypes = [
-  'All',
-  'concert',
-  'meeting',
-  'workshop',
-  'webinar',
-  'conference',
-  'birthday',
-  'holiday',
-  'festival',
-  'sport',
-  'networking',
-  'fundraiser',
-  'party',
-  'seminar',
-  'launch',
-  'training'
-] as const
+const eventTypes = ref<string[]>([])
+
+onMounted(async () => {
+  state.isLoading = true;
+
+  try {
+    if (!userId.value) {
+      return;
+    }
+
+    const eventTypeData = await eventStore.fetchEventTypes();
+    eventTypes.value = eventTypeData.map(item => item.name);
+
+    await eventStore.fetchEvents(userId.value);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    
+  } finally {
+    state.isLoading = false;
+  }
+});
+
+type EventTypeName = string | 'All'; // or a stricter union if you know the types
 
 type EventListState = {
   timeFilter: 'All' | 'Upcoming' | 'Past',
-  typeFilter: typeof eventTypes[number],
+  typeFilter: EventTypeName
   isLoading: boolean,
 }
 const state = reactive<EventListState>({
@@ -84,7 +89,7 @@ const filteredEvents = computed(() => {
         </label>
         <USelectMenu
           v-model="state.typeFilter"
-          :items="Array.from(eventTypes)"
+          :items="['All', ...eventTypes]"
           class="w-full md:w-48"
         />
       </div>
@@ -111,6 +116,7 @@ const filteredEvents = computed(() => {
         :title="event.title"   
         :date="new Date(event.date).toLocaleDateString()"
         :type="event.type"
+        :icon="event.icon"
     />
     </ul>
   </UCard>

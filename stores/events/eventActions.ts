@@ -1,10 +1,10 @@
-import { type Event } from '#imports'
+
+import type { EventTypes, Event } from '~/utils/types';
 
 export const eventActions = {
   async fetchEvents(this: any, userId: string) {
     this.events = await $fetch<Event[]>(`/api/events?userId=${userId}`)
   },
-
   async fetchSingleEvent(this: any, id: string): Promise<Event> {
     try {
       const events = await $fetch<Event[]>(`/api/events/${id}`);
@@ -14,7 +14,15 @@ export const eventActions = {
       throw error;
     }
   },
-
+  async fetchEventTypes(): Promise<EventTypes[]> {
+    try {
+      const eventTypes = await $fetch<EventTypes[]>(`/api/eventType`);
+      return eventTypes
+    } catch (error) {
+        console.error('Failed to fetch  event types:', error);
+        throw error
+    }
+  },
   async addEvent(
     this: any,
     event: Pick<Event, 'title' | 'date' | 'type' | 'userId'>

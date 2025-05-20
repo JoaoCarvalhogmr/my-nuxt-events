@@ -1,17 +1,15 @@
 <script setup lang="ts">
   import type { Event } from '#imports';
-  import {eventIconMap} from "~/utils/eventIcons"
   import { useAuth } from '#imports';
   import { EventDeleteModal } from '#components';
   import EditModal from './EditModal.vue';
   import { useEventStore } from '~/stores/events/useEventstore';
 
+
   const props = defineProps<Event>();
-  const icon = computed(() => eventIconMap[props.type] || eventIconMap.default)
   const store = useEventStore();
   const overlay = useOverlay()
   const { userId, isLoaded } = useAuth();
-
 
   const deleteEvent = async() => {
     if (!isLoaded.value || !userId.value) return;
@@ -58,7 +56,7 @@
     <template #header>
       <div class="flex items-center gap-4">
         <UIcon
-          :name="icon"
+          :name="props.icon ?? ''"
           class="text-blue-400"
           size="28"
         />

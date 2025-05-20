@@ -1,5 +1,5 @@
 import { db } from '~/server/database';
-import { events } from '~/server/database/schema';
+import { events, eventType } from '~/server/database/schema';
 import { asc, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -19,13 +19,22 @@ export default defineEventHandler(async (event) => {
   }
 
   if(event.method === 'GET') {
-
     const sortOrder = query.sort === 'desc' ? desc : asc;
-    const allEvents = await db
-      .select()
-      .from(events)
+    // const allEvents = await db
+    //   .select()
+    //   .from(events)
+    //   .where(eq(events.userId, userId))
+    //   .orderBy(sortOrder(events.date));    
+
+      const allEvents = await db.select({
+        id: events.id,
+        title: events.title,
+        date: events.date,
+        type: events.type,
+        icon: eventType.icon
+      }).from(events).innerJoin(eventType, eq(eventType.name, events.type))
       .where(eq(events.userId, userId))
-      .orderBy(sortOrder(events.date));    
+      .orderBy(sortOrder(events.date))
       return allEvents;
   }
 

@@ -2,15 +2,16 @@
  import { reactive } from 'vue'
  import { useEventStore } from '~/stores/events/useEventstore';
  import { type Event } from '#imports';
-
+ 
   const props = defineProps<{
       eventId: string,
   }>()
 
   const emit = defineEmits<{ close: [boolean] }>()
 
- const store = useEventStore();
+  const store = useEventStore();
 
+  const eventTypes = ref<string[]>([]);
 
   const state = reactive<Pick<Event, 'title'| 'date' | 'type'>>({
     title: '',
@@ -18,32 +19,17 @@
     type: ''
   })
 
-const populateForm = async() => {
-  const res = await store.fetchSingleEvent(props.eventId);
-  state.title = res.title;
-  state.type = res.type;
-  state.date = new Date(res.date).toISOString().split('T')[0]
-}
+  const populateFormAndFetchEvenTypes = async() => {
+    const res = await store.fetchSingleEvent(props.eventId);
+    state.title = res.title;
+    state.type = res.type;
+    state.date = new Date(res.date).toISOString().split('T')[0]
+    const data = await store.fetchEventTypes();
+    eventTypes.value = data.map((item) => item.name);
+  }
 
-onMounted(populateForm)
+onMounted(populateFormAndFetchEvenTypes)
 
-const items = [
-  'concert',
-  'meeting',
-  'workshop',
-  'webinar',
-  'conference',
-  'birthday',
-  'holiday',
-  'festival',
-  'sport',
-  'networking',
-  'fundraiser',
-  'party',
-  'seminar',
-  'launch',
-  'training'
-];
 const toast = useToast();
 
 const showToast = () => {
@@ -97,7 +83,7 @@ const submitEvent = async () => {
     <template #footer>
       <form @submit.prevent="submitEvent" class="flex items-center gap-2">
         <UInput v-model="state.title" placeholder="Event title"  />
-        <USelect v-model="state.type" :items="items" placeholder="Event type" class="w-48" />
+        <USelect v-model="state.type" :items="eventTypes" placeholder="Event type" class="w-48" />
         <UInput v-model="state.date" type="date"    />
         <UButton color="warning" type="submit" icon="i-heroicons-arrow-path" size="lg">Edit</UButton>
       </form>

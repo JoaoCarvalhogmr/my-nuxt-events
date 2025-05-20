@@ -8,6 +8,7 @@ import {
   createViewMonthGrid,
 } from '@schedule-x/calendar'
 import '@schedule-x/theme-default/dist/index.css'
+import { useEventStore } from '~/stores/events/useEventstore'
 
 const calendarApp = shallowRef()
 const eventStore = useEventStore()

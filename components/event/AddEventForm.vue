@@ -1,36 +1,25 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useAuth } from '#imports';
 import { useEventStore } from '~/stores/events/useEventstore';
 import type { Event } from '~/utils/types';
 
 const { userId, isLoaded } = useAuth();
+const eventStore = useEventStore()
 
+onMounted(async() => {
+  const data = await eventStore.fetchEventTypes();
+  eventTypes.value = data.map((item) => item.name);
+})
+
+const eventTypes = ref<string[]>([]);
 const state = reactive<Pick<Event, 'title' | 'date'|'type'>>({
   title: '',
   date: '',
   type: ''
 })
 
-const items: Pick<Event, 'type'> = [
-  'concert',
-  'meeting',
-  'workshop',
-  'webinar',
-  'conference',
-  'birthday',
-  'holiday',
-  'festival',
-  'sport',
-  'networking',
-  'fundraiser',
-  'party',
-  'seminar',
-  'launch',
-  'training'
-];
 const toast = useToast();
-const eventStore = useEventStore()
 
 const showToast = () => {
   toast.add({
@@ -88,7 +77,7 @@ const submitEvent = async () => {
     <UCard class="p-4">
       <form @submit.prevent="submitEvent" class="flex items-center gap-2">
         <UInput v-model="state.title" placeholder="Event title"  />
-        <USelect v-model="state.type" :items="items" placeholder="Event type" class="w-48" />
+        <USelect v-model="state.type" :items="eventTypes" placeholder="Event type" class="w-48" />
         <UInput v-model="state.date" type="date"    />
         <UButton type="submit" icon="i-heroicons-plus" size="lg">Add Event</UButton>
       </form>
