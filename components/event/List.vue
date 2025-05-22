@@ -2,7 +2,7 @@
 import { computed, onMounted,reactive } from 'vue'
 import { useAuth} from '#imports'
 import { useEventStore } from '~/stores/events/useEventstore'
-
+import FilterLabelWrapper from './FilterLabelWrapper.vue'
 const eventStore = useEventStore()
 
 const eventTypes = ref<string[]>([])
@@ -73,26 +73,20 @@ const filteredEvents = computed(() => {
 <template>
   <UCard class="p-4">
     <div class="bg-[#1e293b] p-4 rounded-xl mb-6 shadow flex flex-col md:flex-row gap-4">
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-white mb-1">
-          Filter by Time
-        </label>
+      <FilterLabelWrapper label="Time">
         <USelectMenu
-            v-model="state.timeFilter"
-            :items="['All', 'Upcoming', 'Past']"
-            class="w-full md:w-48"
-        />
-      </div>
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-white mb-1">
-          Filter by Type
-        </label>
+              v-model="state.timeFilter"
+              :items="['All', 'Upcoming', 'Past']"
+              class="w-full md:w-48"
+          />
+      </FilterLabelWrapper>
+      <FilterLabelWrapper label="Type">
         <USelectMenu
           v-model="state.typeFilter"
           :items="['All', ...eventTypes]"
           class="w-full md:w-48"
         />
-      </div>
+      </FilterLabelWrapper>
     </div>
     <h2 class="text-gray-900 dark:text-white font-semibold text-lg flex items-center gap-2">
       {{ state.timeFilter }} Events
