@@ -94,10 +94,12 @@ const filteredEvents = computed(() => {
         />
       </div>
     </div>
-
-    <h2 class="text-gray-900 dark:text-white font-semibold text-lg">
+    <h2 class="text-gray-900 dark:text-white font-semibold text-lg flex items-center gap-2">
       {{ state.timeFilter }} Events
-    </h2>
+    <UBadge v-if="filteredEvents.length" color="primary" variant="subtle">
+      {{ filteredEvents.length }}
+    </UBadge>
+</h2>
     <USeparator />
     <EventSkeleton v-if="state.isLoading" />
     <div v-else-if="!filteredEvents.length" class="flex flex-col items-center justify-center mt-6 text-gray-400 text-center">
@@ -109,6 +111,7 @@ const filteredEvents = computed(() => {
       </p>
     </div>
     <ul v-else class="flex flex-col gap-2 mt-2">
+      
     <EventCard 
         v-for="event in filteredEvents" 
         :key="event.id" 
