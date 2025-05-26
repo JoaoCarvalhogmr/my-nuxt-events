@@ -3,9 +3,12 @@ import { computed, onMounted,reactive } from 'vue'
 import { useAuth} from '#imports'
 import { useEventStore } from '~/stores/events/useEventstore'
 import FilterLabelWrapper from './FilterLabelWrapper.vue'
+import { UPagination } from '#components'
 const eventStore = useEventStore()
 
 const eventTypes = ref<string[]>([])
+
+
 
 onMounted(async () => {
   state.isLoading = true;
@@ -31,13 +34,18 @@ type EventTypeName = string | 'All'; // or a stricter union if you know the type
 
 type EventListState = {
   timeFilter: 'All' | 'Upcoming' | 'Past',
-  typeFilter: EventTypeName
+  typeFilter: EventTypeName,
   isLoading: boolean,
+  page: number,
+  itemsPerPage: number
 }
+
 const state = reactive<EventListState>({
   timeFilter: 'All',
   typeFilter: 'All',
-  isLoading: false  
+  isLoading: false,
+  page: 1,
+  itemsPerPage: 10
 })
 
 const { userId } = useAuth();
@@ -58,16 +66,24 @@ const filteredEvents = computed(() => {
   return eventStore.events.filter(({ date, type }) => {
     const eventDate = new Date(date)
 
-    const isTimeMatch = 
+    const isTimeMatch =
       state.timeFilter === 'All' ||
       (state.timeFilter === 'Upcoming' && eventDate >= now) ||
       (state.timeFilter === 'Past' && eventDate < now)
 
-    const isTypeMatch = 
+    const isTypeMatch =
       state.typeFilter === 'All' || type === state.typeFilter
+
     return isTimeMatch && isTypeMatch
   })
 })
+
+const paginatedEvents = computed(() => {
+  const start = (state.page - 1) * state.itemsPerPage
+  const end = start + state.itemsPerPage
+  return filteredEvents.value.slice(start, end)
+})
+
 
 </script>
 <template>
@@ -93,7 +109,7 @@ const filteredEvents = computed(() => {
     <UBadge v-if="filteredEvents.length" color="primary" variant="subtle">
       {{ filteredEvents.length }}
     </UBadge>
-</h2>
+    </h2>
     <USeparator />
     <EventSkeleton v-if="state.isLoading" />
     <div v-else-if="!filteredEvents.length" class="flex flex-col items-center justify-center mt-6 text-gray-400 text-center">
@@ -107,7 +123,7 @@ const filteredEvents = computed(() => {
     <ul v-else class="flex flex-col gap-2 mt-2">
       
     <EventCard 
-        v-for="event in filteredEvents" 
+        v-for="event in paginatedEvents" 
         :key="event.id" 
         :id="event.id" 
         :title="event.title"   
@@ -116,5 +132,24 @@ const filteredEvents = computed(() => {
         :icon="event.icon"
     />
     </ul>
+    <ul v-else class="flex flex-col gap-2 mt-2">
+      <EventCard 
+        v-for="event in paginatedEvents" 
+        :key="event.id" 
+        :id="event.id" 
+        :title="event.title"   
+        :date="new Date(event.date).toLocaleDateString()"
+        :type="event.type"
+        :icon="event.icon"
+      />
+    </ul>
+
+    <UPagination
+      v-if="filteredEvents.length > state.itemsPerPage"
+      v-model:page="state.page"
+      :total="filteredEvents.length"
+      :items-per-page="state.itemsPerPage"
+      class="mt-6"
+    />
   </UCard>
 </template>
