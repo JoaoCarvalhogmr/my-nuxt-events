@@ -10,7 +10,6 @@ const EventInput = z.object({
   userId: z.string(),
 });
 
-
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const userId = String(query.userId);
@@ -20,11 +19,6 @@ export default defineEventHandler(async (event) => {
 
   if(event.method === 'GET') {
     const sortOrder = query.sort === 'desc' ? desc : asc;
-    // const allEvents = await db
-    //   .select()
-    //   .from(events)
-    //   .where(eq(events.userId, userId))
-    //   .orderBy(sortOrder(events.date));    
 
       const allEvents = await db.select({
         id: events.id,

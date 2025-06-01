@@ -1,4 +1,9 @@
 <script setup lang="ts">
+  useHead({
+    title: 'Events Manager'
+  })
+
+
 </script>
   
 <template>

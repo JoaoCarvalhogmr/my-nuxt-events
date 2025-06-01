@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted,reactive } from 'vue'
 import { useAuth} from '#imports'
-import { useEventStore } from '~/stores/events/useEventstore'
 import FilterLabelWrapper from './FilterLabelWrapper.vue'
-import { UPagination } from '#components'
+import { useEventStore } from '~/stores/events/useEventstore'
+
+
 const eventStore = useEventStore()
 
 const eventTypes = ref<string[]>([])
-
-
 
 onMounted(async () => {
   state.isLoading = true;
@@ -121,7 +120,6 @@ const paginatedEvents = computed(() => {
       </p>
     </div>
     <ul v-else class="flex flex-col gap-2 mt-2">
-      
     <EventCard 
         v-for="event in paginatedEvents" 
         :key="event.id" 
